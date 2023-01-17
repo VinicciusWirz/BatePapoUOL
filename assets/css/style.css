@@ -6,6 +6,7 @@
 
 body {
     background-color: #f3f3f3;
+    word-break: break-word;
 }
 
 header {
@@ -14,8 +15,7 @@ header {
     left: 0;
     height: 80px;
     width: 100vw;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 0 20px;
     background: #FFFFFF;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
     font-size: 45px;
@@ -84,7 +84,8 @@ footer {
     justify-content: space-between;
     align-items: center;
 }
-footer>div{
+
+footer>div {
     height: 100%;
     width: 62px;
     display: flex;
@@ -111,6 +112,12 @@ footer>input {
     color: black;
     opacity: 1;
 }
-.hide{
+
+.hide {
     display: none;
+    z-index: -1;
+}
+
+.opacity {
+    opacity: 0;
 }
