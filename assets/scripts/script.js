@@ -6,23 +6,32 @@ const viewer = document.querySelector('ul');
 const msgInput = document.querySelector('footer>input');
 let keepSession = '';
 let chatSession = '';
+const loginInput = document.querySelector('.login>.signin>input');
 
-login();
+loginInput.addEventListener('keypress', function (keyPush) {
+    if (keyPush.key === 'Enter') {
+        login();
+    }
+})
+
 function login() {
-    const nameRequest = prompt(question);
+    const nameRequest = loginInput.value;
     if (nameRequest !== '' && nameRequest !== null) {
+        document.querySelector('.signin').innerHTML = `<img src = "./assets/imgs/Quarter-Circle-Loading-Image-1.gif">`;
         const name = { name: nameRequest };
         const promise = axios.post(serverUser, name);
         promise.then(success);
         promise.catch(failed);
     } else {
-        login();
+        alert('Digite um nome de usuário válido');
+        loginInput.value = '';
     }
 }
 
 function success(answer) {
     const serverStatus = answer.status;
     if (serverStatus === 200) {
+        document.querySelector('.login').classList.add('hide');
         sessionName = JSON.parse(answer.config.data).name;
         updateChat();
         chatSession = setInterval(() => {
@@ -30,7 +39,7 @@ function success(answer) {
         }, 3000);
         keepSession = setInterval(() => {
             const promise = axios.post(serverStatusLink, JSON.parse(answer.config.data));
-            promise.catch(lostConnection)
+            promise.catch(lostConnection);
         }, 5000);
     }
 }
@@ -47,6 +56,7 @@ function failed(answer) {
         window.location.reload();
     } else {
         alert('Connection Error');
+        window.location.reload();
     }
 }
 
@@ -84,8 +94,7 @@ function chatPlacing(time, sender, type, msg, receiver) {
     }
     if (type === 'private_message' && (sessionName === sender || sessionName === receiver)) {
         viewer.innerHTML += `<li class="pm">
-        <p><span class="time">(${time})</span> <b>${sender}</b> reservadamente para <b>${receiver}</b>: Oi!!!
-            Tudo bem?</p>
+        <p><span class="time">(${time})</span> <b>${sender}</b> reservadamente para <b>${receiver}</b>: ${msg}</p>
     </li>`
         viewer.querySelector('li:last-child').scrollIntoView();
     }
