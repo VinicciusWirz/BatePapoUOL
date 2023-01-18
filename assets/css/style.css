@@ -113,6 +113,10 @@ footer>input {
     opacity: 1;
 }
 
+input:focus{
+    outline: none;
+}
+
 .hide {
     display: none;
     z-index: -1;

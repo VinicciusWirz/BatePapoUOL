@@ -1,16 +1,22 @@
-const server = 'https://mock-api.driven.com.br/api/v6/uol/participants';
+const serverUser = 'https://mock-api.driven.com.br/api/v6/uol/participants';
+const serverStatusLink = 'https://mock-api.driven.com.br/api/v6/uol/status';
 let sessionName = '';
 let question = 'Insira seu nome de login:';
 const viewer = document.querySelector('ul');
+const msgInput = document.querySelector('footer>input');
+let keepSession = '';
+let chatSession = '';
 
 login();
 function login() {
     const nameRequest = prompt(question);
-    if (nameRequest !== '') {
+    if (nameRequest !== '' && nameRequest !== null) {
         const name = { name: nameRequest };
-        const promise = axios.post(server, name);
+        const promise = axios.post(serverUser, name);
         promise.then(success);
         promise.catch(failed);
+    } else {
+        login();
     }
 }
 
@@ -19,19 +25,28 @@ function success(answer) {
     if (serverStatus === 200) {
         sessionName = JSON.parse(answer.config.data).name;
         updateChat();
-        setInterval(function () {
+        chatSession = setInterval(() => {
             updateChat();
         }, 3000);
-        dcFromChat();
+        keepSession = setInterval(() => {
+            const promise = axios.post(serverStatusLink, JSON.parse(answer.config.data));
+            promise.catch(lostConnection)
+        }, 5000);
     }
+}
+
+function lostConnection() {
+    clearInterval(keepSession);
+    clearInterval(chatSession);
 }
 
 function failed(answer) {
     const serverStatus = answer.response.status;
     if (serverStatus === 400) {
         alert('Este nome de usuário já está em uso, Por favor escolha outro');
+        window.location.reload();
     } else {
-        alert('Erro de conexção ')
+        alert('Connection Error');
     }
 }
 
@@ -42,25 +57,15 @@ function updateChat() {
 
 function chatRender(answer) {
     const chatInfo = answer.data;
-    let lastMsgTime = document.querySelector('ul li:last-child');
-
-    for (let i = 0; i < 100; i++) {
-        console.log(i);
-        if (lastMsgTime !== null) {
-            lastMsgTime = lastMsgTime.querySelector('.time').innerHTML.replace('(', '').replace(')', '');
-            i = 99;
-        } else if (lastMsgTime === null) {
-            lastMsgTime === 0;
-        }
+    viewer.innerHTML = '';
+    for (let i = 0; i < chatInfo.length; i++) {
         const time = chatInfo[i].time;
         const sender = chatInfo[i].from;
         const type = chatInfo[i].type;
         const msg = chatInfo[i].text;
-        console.log(lastMsgTime, chatInfo[99].time, lastMsgTime === chatInfo[99].time);
-        if (lastMsgTime === chatInfo[99].time) {
-            return;
-        }
-        chatPlacing(time, sender, type, msg, chatInfo[i].to);
+        const receiver = chatInfo[i].to;
+
+        chatPlacing(time, sender, type, msg, receiver);
     }
 }
 
@@ -86,8 +91,30 @@ function chatPlacing(time, sender, type, msg, receiver) {
     }
 }
 
-function dcFromChat() {
-    setInterval(() => {
-        window.location.reload();
-    }, 5000);
+msgInput.addEventListener('keypress', function (keyPush) {
+    if (keyPush.key === 'Enter') {
+        sendMsg();
+    }
+})
+
+function sendMsg() {
+    const msgBuild = {
+        from: sessionName,
+        to: "Todos",
+        text: msgInput.value,
+        type: "message"
+    }
+    const promise = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', msgBuild);
+    promise.then(validadeMsg);
+    promise.catch(msgError);
+    msgInput.value = '';
+}
+
+function validadeMsg() {
+    updateChat();
+}
+
+function msgError() {
+    alert('Você foi desconectado')
+    window.location.reload();
 }
