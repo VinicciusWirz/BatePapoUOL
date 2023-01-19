@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batepapo Uol</title>
+    <link rel="shortcut icon" href="./assets/imgs/icon.png">
     <link rel="stylesheet" href="./assets/css/reset.css">
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
@@ -13,26 +14,45 @@
 <body>
     <div class="login">
         <img src="./assets/imgs/batepapologo.png" alt="logo">
-        <div class = "signin">
-            <input type="text" name="" placeholder="Digite seu nome" required>
-            <button onclick="login();">Entrar</button>
-            
-        </div>
+        <form class="signin">
+            <input type="text" name="" placeholder="Digite seu nome" required data-test="input-name">
+            <button onclick="login();" data-test="send-name">Entrar</button>
+
+        </form>
+    </div>
+    <div class="overlay hide">
+        <div onclick="ToggleParticipants();" class="return" data-test="overlay"></div>
+        <aside>
+            <div class="description">Escolha um contato para enviar mensagem:</div>
+            <ul class="participants">
+            </ul>
+            <div class="description">Escolha a visibilidade:</div>
+            <ul class="privacy">
+                <li class="selected" onclick="selectPrivacy(this);" data-test="public">
+                    <div><ion-icon name="lock-open"></ion-icon><span>Público</span></div><ion-icon class="checkmark"
+                        name="checkmark-outline" data-test="check"></ion-icon>
+                </li>
+                <li onclick="selectPrivacy(this);" data-test="private">
+                    <div><ion-icon name="lock-closed"></ion-icon><span>Reservadamente</span></div><ion-icon class="checkmark hide"
+                        name="checkmark-outline" data-test="check"></ion-icon>
+                </li>
+            </ul>
+        </aside>
     </div>
     <header>
         <img src="./assets/imgs/batepapologo.png" alt="logo">
-        <ion-icon name="people"></ion-icon>
+        <ion-icon name="people" onclick="ToggleParticipants();" data-test="open-participants"></ion-icon>
     </header>
-    <ul>
+    <ul class="chatRender">
 
     </ul>
 
     <footer>
-        <input type="text" placeholder="Escreva aqui..." required>
-        <div onclick="sendMsg();">
+        <input type="text" placeholder="Escreva aqui..." data-test="input-message">
+        <button onclick="sendMsg();" data-test="send-message">
             <ion-icon name="paper-plane-outline"></ion-icon>
-        </div>
-        
+        </button>
+        <span data-test="recipient"></span>
     </footer>
 
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

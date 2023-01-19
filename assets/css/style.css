@@ -7,7 +7,6 @@
 body {
     background-color: #f3f3f3;
     word-break: break-word;
-    transition: all 0.5s;
 }
 
 header {
@@ -23,14 +22,14 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    z-index: 1;
 }
 
 header img {
     width: 75px;
 }
 
-ul {
+.chatRender {
     margin-top: 80px;
     padding-top: 26px;
     max-height: calc(100%-80px);
@@ -38,8 +37,8 @@ ul {
     margin-bottom: 80px;
 }
 
-ul>li {
-    background: #FFFFFF;
+.chatRender>li {
+
     border-radius: 2px;
     margin-bottom: 4px;
     display: flex;
@@ -63,11 +62,15 @@ b {
     color: #AAAAAA;
 }
 
-.sign-in {
+#message {
+    background: #FFFFFF;
+}
+
+#status {
     background-color: #DCDCDC;
 }
 
-.pm {
+#pm {
     background-color: #FFDEDE;
 }
 
@@ -86,12 +89,15 @@ footer {
     align-items: center;
 }
 
-footer>div {
+footer>button {
     height: 100%;
     width: 62px;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 26px;
+    border: none;
+    background-color: #FFFFFF;
 }
 
 footer>input {
@@ -103,6 +109,20 @@ footer>input {
     font-weight: 400;
     font-size: 18px;
     line-height: 25px;
+}
+
+footer>span {
+    position: absolute;
+    bottom: 5px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 3 00;
+    font-size: 14px;
+    line-height: 25px;
+    display: flex;
+    align-items: center;
+
+    color: #505050;
+
 }
 
 ::placeholder {
@@ -127,11 +147,10 @@ input:focus {
     height: 100vh;
     background-color: #FFFFFF;
     z-index: 999;
-    opacity: 1;
 }
 
 .login,
-.login div {
+.login form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -168,7 +187,7 @@ input:focus {
 .login button {
     width: 109px;
     height: 45px;
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
@@ -177,11 +196,88 @@ input:focus {
     border: none;
 }
 
-.hide {
-    display: none;
-    z-index: -1;
+.overlay {
+    background: rgba(0, 0, 0, 0.6);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: flex-end;
+    transition: 500ms;
 }
 
-.opacity {
-    opacity: 0;
+.overlay>div {
+    width: 100vw;
+    height: 100vh;
+}
+
+.overlay>aside {
+    background-color: #FFFFFF;
+    position: absolute;
+    height: 100%;
+    width: 259px;
+    right: 0%;
+    z-index: 5;
+}
+
+.overlay>aside>.description {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    color: black;
+    padding: 0 45px;
+    width: 259px;
+    height: 84px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.overlay>aside>ul {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000000;
+    max-height: 205px;
+    overflow-y: scroll;
+}
+
+.overlay>aside>ul>li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 18px;
+}
+
+.overlay>aside>ul>li>div {
+    display: flex;
+    align-items: center;
+}
+
+.overlay>aside>ul>li>div>ion-icon {
+    margin-right: 8px
+}
+
+.overlay>aside>ul>li ion-icon {
+    font-size: 20px;
+}
+
+.overlay>aside>ul>li:not(:first-child) {
+    margin-top: 8px;
+}
+
+.checkmark {
+    font-weight: bold;
+    color: #28bb25;
+}
+
+.hide {
+    display: none;
 }
