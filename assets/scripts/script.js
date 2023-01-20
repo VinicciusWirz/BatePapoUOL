@@ -7,7 +7,7 @@ const serverStatusLink = 'https://mock-api.driven.com.br/api/v6/uol/status';
 const participantsUl = document.querySelector('.participants');
 let keepSession = '';
 let chatSession = '';
-let msgBuild = {
+const msgBuild = {
     from: '',
     to: "Todos",
     text: '',
@@ -18,10 +18,10 @@ loginInput.addEventListener('keypress', function (keyPush) {
     if (keyPush.key === 'Enter') {
         login();
     }
-})
+});
 loginInput.parentElement.querySelector('button').addEventListener('click', (press) => {
     press.preventDefault();
-})
+});
 
 function login() {
     const nameRequest = loginInput.value;
@@ -75,7 +75,7 @@ function failed(answer) {
 }
 
 function updateChat() {
-    const promise = axios.get(serverMessages)
+    const promise = axios.get(serverMessages);
     promise.then(chatRender);
 }
 
@@ -99,17 +99,17 @@ function chatPlacing(time, sender, type, msg, receiver) {
     if (type === 'status') {
         viewer.innerHTML += `<li id="status" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> ${msg}</p>
-    </li>`
+    </li>`;
     }
     if (type === 'message') {
         viewer.innerHTML += `<li id="message" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> para <b>${receiver}</b>: ${msg}</p>
-    </li>`
+    </li>`;
     }
     if (type === 'private_message' && userInPM) {
         viewer.innerHTML += `<li id="pm" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> reservadamente para <b>${receiver}</b>: ${msg}</p>
-    </li>`
+    </li>`;
     }
 }
 
@@ -117,7 +117,7 @@ msgInput.addEventListener('keypress', function (keyPush) {
     if (keyPush.key === 'Enter') {
         sendMsg();
     }
-})
+});
 
 function sendMsg() {
     if (msgInput.value === '' || msgInput.value === null) {
@@ -135,17 +135,17 @@ function validadeMsg() {
 }
 
 function msgError() {
-    alert('Você foi desconectado')
+    alert('Você foi desconectado');
     window.location.reload();
 }
 
-function ToggleParticipants() {
+function toggleParticipants() {
     document.querySelector('.overlay').classList.toggle('hide');
 }
 
 function updateParticipants() {
     const promise = axios.get(serverUser);
-    promise.then(renderParticipants)
+    promise.then(renderParticipants);
 }
 
 function renderParticipants(answer) {
@@ -196,9 +196,9 @@ function selectPrivacy(item) {
     const everyoneAndPrivate = item.querySelector('span').innerHTML === 'Todos' && privateMsg.classList.contains('selected');
 
     if (item.querySelector('span').innerHTML === 'Público' || everyoneAndPrivate) {
-        publicMsg.classList.add('selected')
+        publicMsg.classList.add('selected');
         publicMsgCheck.classList.remove('hide');
-        privateMsg.classList.remove('selected')
+        privateMsg.classList.remove('selected');
         privateMsgCheck.classList.add('hide');
         msgBuild.type = 'message';
         sendingTo();
@@ -208,9 +208,9 @@ function selectPrivacy(item) {
         if (document.querySelector(`.everyone`).classList.contains('selected')) {
             return;
         }
-        publicMsg.classList.remove('selected')
+        publicMsg.classList.remove('selected');
         publicMsgCheck.classList.add('hide');
-        privateMsg.classList.add('selected')
+        privateMsg.classList.add('selected');
         privateMsgCheck.classList.remove('hide');
         msgBuild.type = 'private_message';
         sendingTo();
@@ -220,9 +220,9 @@ function selectPrivacy(item) {
 function sendingTo() {
     const sending = document.querySelector('footer>span');
     if (msgBuild.type === 'message') {
-        sending.innerHTML = `Enviando para ${msgBuild.to}`
+        sending.innerHTML = `Enviando para ${msgBuild.to}`;
     }
     if (msgBuild.type === 'private_message') {
-        sending.innerHTML = `Enviando reservadamente para ${msgBuild.to}`
+        sending.innerHTML = `Enviando reservadamente para ${msgBuild.to}`;
     }
 }

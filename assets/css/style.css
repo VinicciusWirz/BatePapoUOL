@@ -248,10 +248,6 @@ input:focus {
     scrollbar-width: none;
 }
 
-.overlay>aside>ul>li:hover {
-    color: #696969;
-}
-
 ::-webkit-scrollbar {
     display: none;
 }
@@ -265,17 +261,21 @@ input:focus {
     transition: 500ms;
 }
 
+.overlay>aside>ul>li:hover {
+    color: #696969;
+}
+
 .overlay>aside>ul>li>div {
     display: flex;
     align-items: center;
 }
 
-.overlay>aside>ul>li>div>ion-icon {
-    margin-right: 8px
-}
-
 .overlay>aside>ul>li ion-icon {
     font-size: 20px;
+}
+
+.overlay>aside>ul>li>div>ion-icon {
+    margin-right: 8px
 }
 
 .overlay>aside>ul>li:not(:first-child) {
