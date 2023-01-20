@@ -28,13 +28,13 @@
             </ul>
             <div class="description">Escolha a visibilidade:</div>
             <ul class="privacy">
-                <li class="selected" onclick="selectPrivacy(this);" data-test="public">
+                <li class="public selected" onclick="selectPrivacy(this);" data-test="public">
                     <div><ion-icon name="lock-open"></ion-icon><span>Público</span></div><ion-icon class="checkmark"
                         name="checkmark-outline" data-test="check"></ion-icon>
                 </li>
-                <li onclick="selectPrivacy(this);" data-test="private">
-                    <div><ion-icon name="lock-closed"></ion-icon><span>Reservadamente</span></div><ion-icon class="checkmark hide"
-                        name="checkmark-outline" data-test="check"></ion-icon>
+                <li class="private" onclick="selectPrivacy(this);" data-test="private">
+                    <div><ion-icon name="lock-closed"></ion-icon><span>Reservadamente</span></div><ion-icon
+                        class="checkmark hide" name="checkmark-outline" data-test="check"></ion-icon>
                 </li>
             </ul>
         </aside>

@@ -25,7 +25,7 @@ loginInput.parentElement.querySelector('button').addEventListener('click', (pres
 
 function login() {
     const nameRequest = loginInput.value;
-    if (nameRequest !== '' && nameRequest !== null) {
+    if (nameRequest !== '' && nameRequest !== null && nameRequest !== 'Todos') {
         document.querySelector('.signin').innerHTML = `<img src = "./assets/imgs/Quarter-Circle-Loading-Image-1.gif">`;
         const name = { name: nameRequest };
         const promise = axios.post(serverUser, name);
@@ -40,6 +40,8 @@ function success(answer) {
     const serverResponse = answer.status;
     const successStatus = 200;
     if (serverResponse === successStatus) {
+        const updateTime = 3000;
+        const sendStatusTime = 5000;
         document.querySelector('.login').classList.add('hide');
         msgBuild.from = JSON.parse(answer.config.data).name;
         updateChat();
@@ -47,11 +49,11 @@ function success(answer) {
         chatSession = setInterval(() => {
             updateChat();
             updateParticipants();
-        }, 3000);
+        }, updateTime);
         keepSession = setInterval(() => {
             const promise = axios.post(serverStatusLink, JSON.parse(answer.config.data));
             promise.catch(lostConnection);
-        }, 5000);
+        }, sendStatusTime);
     }
 }
 
@@ -89,26 +91,25 @@ function chatRender(answer) {
 
         chatPlacing(time, sender, type, msg, receiver);
     }
+    viewer.querySelector('li:last-child').scrollIntoView();
 }
 
 function chatPlacing(time, sender, type, msg, receiver) {
+    const userInPM = msgBuild.from === sender || msgBuild.from === receiver;
     if (type === 'status') {
         viewer.innerHTML += `<li id="status" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> ${msg}</p>
     </li>`
-        viewer.querySelector('li:last-child').scrollIntoView();
     }
     if (type === 'message') {
         viewer.innerHTML += `<li id="message" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> para <b>${receiver}</b>: ${msg}</p>
     </li>`
-        viewer.querySelector('li:last-child').scrollIntoView();
     }
-    if (type === 'private_message' && (msgBuild.from === sender || msgBuild.from === receiver)) {
+    if (type === 'private_message' && userInPM) {
         viewer.innerHTML += `<li id="pm" data-test="message">
         <p><span class="time">(${time})</span> <b>${sender}</b> reservadamente para <b>${receiver}</b>: ${msg}</p>
     </li>`
-        viewer.querySelector('li:last-child').scrollIntoView();
     }
 }
 
@@ -151,21 +152,23 @@ function renderParticipants(answer) {
     const participantsList = answer.data;
 
     participantsUl.innerHTML = '';
-    participantsUl.innerHTML = `<li onclick = "selectTarget(this)" id="Todos" data-test="all">
+    participantsUl.innerHTML = `<li class="everyone" onclick="selectTarget(this)" id="Todos" data-test="all">
     <div><ion-icon name="people"></ion-icon><span class="user">Todos</span></div><ion-icon
         class="checkmark hide" name="checkmark-outline" data-test="check"></ion-icon>
 </li>`;
     for (let i = 0; i < participantsList.length; i++) {
-        participantsUl.innerHTML += `<li onclick = "selectTarget(this)" id="${participantsList[i].name}" data-test="participant">
+        participantsUl.innerHTML += `<li onclick="selectTarget(this)" id="${participantsList[i].name}" data-test="participant">
         <div><ion-icon name="person-circle"></ion-icon><span class="user">${participantsList[i].name}</span></div><ion-icon
             class="checkmark hide" name="checkmark-outline" data-test="check"></ion-icon>
         </li>`;
     }
     if (document.getElementById(`${msgBuild.to}`) === null) {
         msgBuild.to = 'Todos';
-        document.getElementById(`Todos`).classList.add('selected');
-        document.getElementById(`Todos`).querySelector('.checkmark').classList.remove('hide');
+        const everyoneLi = document.querySelector(`.everyone`);
+        everyoneLi.classList.add('selected');
+        everyoneLi.querySelector('.checkmark').classList.remove('hide');
         sendingTo();
+        selectPrivacy(document.querySelector('.public'));
     } else {
         document.getElementById(`${msgBuild.to}`).classList.add('selected');
         document.getElementById(`${msgBuild.to}`).querySelector('.checkmark').classList.remove('hide');
@@ -179,20 +182,38 @@ function selectTarget(item) {
     item.classList.add('selected');
     item.querySelector('.checkmark').classList.remove('hide');
     msgBuild.to = item.id;
+    if (item.classList.contains('everyone')) {
+        selectPrivacy(item);
+    }
+    sendingTo();
 }
 
 function selectPrivacy(item) {
-    document.querySelector('.privacy>.selected>.checkmark').classList.add('hide');
-    document.querySelector('.privacy>.selected').classList.remove('selected');
-    item.classList.add('selected');
-    item.querySelector('.checkmark').classList.remove('hide');
-    if (item.querySelector('span').innerHTML === 'Público') {
-        msgBuild.type = 'message'
-        sendingTo()
+    const publicMsg = document.querySelector('.public');
+    const publicMsgCheck = publicMsg.querySelector('.checkmark');
+    const privateMsg = document.querySelector('.private');
+    const privateMsgCheck = privateMsg.querySelector('.checkmark');
+    const everyoneAndPrivate = item.querySelector('span').innerHTML === 'Todos' && privateMsg.classList.contains('selected');
+
+    if (item.querySelector('span').innerHTML === 'Público' || everyoneAndPrivate) {
+        publicMsg.classList.add('selected')
+        publicMsgCheck.classList.remove('hide');
+        privateMsg.classList.remove('selected')
+        privateMsgCheck.classList.add('hide');
+        msgBuild.type = 'message';
+        sendingTo();
+        return;
     }
     if (item.querySelector('span').innerHTML === 'Reservadamente') {
-        msgBuild.type = 'private_message'
-        sendingTo()
+        if (document.querySelector(`.everyone`).classList.contains('selected')) {
+            return;
+        }
+        publicMsg.classList.remove('selected')
+        publicMsgCheck.classList.add('hide');
+        privateMsg.classList.add('selected')
+        privateMsgCheck.classList.remove('hide');
+        msgBuild.type = 'private_message';
+        sendingTo();
     }
 }
 
