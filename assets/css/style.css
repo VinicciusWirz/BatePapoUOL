@@ -266,12 +266,20 @@ input:focus {
 }
 
 .overlay>aside>ul>li>div {
+    max-width: 180px;
     display: flex;
     align-items: center;
 }
 
+.overlay span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .overlay>aside>ul>li ion-icon {
     font-size: 20px;
+    min-width: 20px;
 }
 
 .overlay>aside>ul>li>div>ion-icon {

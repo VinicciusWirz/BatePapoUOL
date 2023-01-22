@@ -7,6 +7,7 @@ const serverStatusLink = 'https://mock-api.driven.com.br/api/v6/uol/status';
 const participantsUl = document.querySelector('.participants');
 let keepSession = '';
 let chatSession = '';
+let participantsList = '';
 const msgBuild = {
     from: '',
     to: "Todos",
@@ -42,24 +43,28 @@ function success(answer) {
     if (serverResponse === successStatus) {
         const updateTime = 3000;
         const sendStatusTime = 5000;
+        const updateParticipantsTime = 10000;
         document.querySelector('.login').classList.add('hide');
         msgBuild.from = JSON.parse(answer.config.data).name;
         updateChat();
         updateParticipants();
         chatSession = setInterval(() => {
             updateChat();
-            updateParticipants();
         }, updateTime);
         keepSession = setInterval(() => {
             const promise = axios.post(serverStatusLink, JSON.parse(answer.config.data));
             promise.catch(lostConnection);
         }, sendStatusTime);
+        participantsList = setInterval(() => {
+            updateParticipants();
+        }, updateParticipantsTime);
     }
 }
 
 function lostConnection() {
     clearInterval(keepSession);
     clearInterval(chatSession);
+    clearInterval(participantsList);
 }
 
 function failed(answer) {
@@ -223,6 +228,6 @@ function sendingTo() {
         sending.innerHTML = `Enviando para ${msgBuild.to}`;
     }
     if (msgBuild.type === 'private_message') {
-        sending.innerHTML = `Enviando reservadamente para ${msgBuild.to}`;
+        sending.innerHTML = `Enviando para ${msgBuild.to} (reservadamente)`;
     }
 }
