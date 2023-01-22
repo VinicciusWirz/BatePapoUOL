@@ -7,7 +7,7 @@ const serverStatusLink = 'https://mock-api.driven.com.br/api/v6/uol/status';
 const participantsUl = document.querySelector('.participants');
 let keepSession = '';
 let chatSession = '';
-let participantsList = '';
+let participantsSession = '';
 const msgBuild = {
     from: '',
     to: "Todos",
@@ -55,7 +55,7 @@ function success(answer) {
             const promise = axios.post(serverStatusLink, JSON.parse(answer.config.data));
             promise.catch(lostConnection);
         }, sendStatusTime);
-        participantsList = setInterval(() => {
+        participantsSession = setInterval(() => {
             updateParticipants();
         }, updateParticipantsTime);
     }
@@ -64,7 +64,7 @@ function success(answer) {
 function lostConnection() {
     clearInterval(keepSession);
     clearInterval(chatSession);
-    clearInterval(participantsList);
+    clearInterval(participantsSession);
 }
 
 function failed(answer) {
