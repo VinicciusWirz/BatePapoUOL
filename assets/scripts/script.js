@@ -71,12 +71,11 @@ function failed(answer) {
     const serverResponse = answer.response.status;
     const errorNameAlreadyExists = 400;
     if (serverResponse === errorNameAlreadyExists) {
-        alert('Este nome de usuário já está em uso, Por favor escolha outro');
-        window.location.reload();
+        alert('Este nome de usuário já está em uso. Por favor escolha outro');
     } else {
         alert('Connection Error');
-        window.location.reload();
     }
+    window.location.reload();
 }
 
 function updateChat() {
@@ -156,7 +155,6 @@ function updateParticipants() {
 function renderParticipants(answer) {
     const participantsList = answer.data;
 
-    participantsUl.innerHTML = '';
     participantsUl.innerHTML = `<li class="everyone" onclick="selectTarget(this)" id="Todos" data-test="all">
     <div><ion-icon name="people"></ion-icon><span class="user">Todos</span></div><ion-icon
         class="checkmark hide" name="checkmark-outline" data-test="check"></ion-icon>
@@ -182,6 +180,9 @@ function renderParticipants(answer) {
 }
 
 function selectTarget(item) {
+    if(msgBuild.from === item.id){
+        return;
+    }
     participantsUl.querySelector('.selected>.checkmark').classList.add('hide');
     participantsUl.querySelector('.selected').classList.remove('selected');
     item.classList.add('selected');
